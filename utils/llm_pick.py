@@ -1,38 +1,41 @@
-from langchain_openai import ChatOpenAI
-from langchain_anthropic import ChatAnthropic
+import os
+
 from dotenv import load_dotenv
+from langchain_groq import ChatGroq
+
 load_dotenv()
 
-def pick_llm(level: str):
-    """
-    Picks the appropriate LLM based on the level of the question.
 
-    Args:
-        level (str): The level of the question, can be "low", "medium", or "high".
-
-    Returns:
-        ChatOpenAI: The LLM instance to be used.
+def pick_llm(level: str) -> ChatGroq:
     """
-    if level.lower() == "low":
-        # llm = ChatAnthropic(model_name="claude-haiku-4-5", temperature=0)
-        llm = ChatOpenAI(model_name="gpt-5.6-luna", temperature=0,model_kwargs={
-        "reasoning_effort": "none"
-        })
-    elif level.lower() == "medium":
-        llm = ChatOpenAI(model_name="gpt-5.6-terra", temperature=0,model_kwargs={
-        "reasoning_effort": "none"
-    })
-    elif level.lower() == "high":
-        llm = ChatOpenAI(model_name="gpt-5.6-sol", temperature=0,model_kwargs={
-        "reasoning_effort": "none"
-    })
-    elif level.lower() == "claude":
-        llm = ChatAnthropic(model_name="claude-sonnet-5")
-    else:
+    Return the configured Groq model for the requested complexity level.
+
+    The low, medium, high, and legacy claude levels are preserved for
+    compatibility with the existing agents. All levels intentionally use
+    the same Groq model.
+    """
+    level = level.lower()
+    model_by_level = {
+        "low": os.getenv("GROQ_MODEL", "openai/gpt-oss-20b"),
+        "medium": os.getenv("GROQ_MODEL", "openai/gpt-oss-20b"),
+        "high": os.getenv("GROQ_MODEL", "openai/gpt-oss-20b"),
+        "claude": os.getenv("GROQ_MODEL", "openai/gpt-oss-20b"),
+    }
+
+    if level not in model_by_level:
         raise ValueError(f"Unsupported level: {level}")
 
-    return llm
+    if not os.getenv("GROQ_API_KEY"):
+        raise RuntimeError(
+            "GROQ_API_KEY is missing. Add it to your .env file."
+        )
+
+    return ChatGroq(
+        model=model_by_level[level],
+        temperature=0,
+    )
+
 
 if __name__ == "__main__":
-    llm_obj = pick_llm("low")  
+    llm_obj = pick_llm("low")
     print(llm_obj.invoke("What is the capital of France?"))
