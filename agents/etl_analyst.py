@@ -9,7 +9,6 @@ from Models.schema import ETLAgentSchema
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langgraph.graph import StateGraph, START, END
 from langchain.tools import tool
-from langchain_anthropic import ChatAnthropic
 
 
 #------------------------------------ AGENT TOOLS ------------------------------------#
