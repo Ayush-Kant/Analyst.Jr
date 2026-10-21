@@ -10,7 +10,6 @@ from Models.schema import RouterSchema, DataAgentSchema
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langgraph.graph import StateGraph, START, END
 from langchain.tools import tool
-from langchain_anthropic import ChatAnthropic
 from agents.etl_analyst import etl_analyst
 from agents.sql_analyst import sql_analyst
 
