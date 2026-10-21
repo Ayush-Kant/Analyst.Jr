@@ -90,10 +90,9 @@ The system follows a hierarchical agent architecture:
   - Dynamic code generation based on user requirements
   - Safe code execution
 
-- **Multi-LLM Support**:
-  - Low-complexity queries: Faster, cost-effective LLM
-  - Medium-complexity queries: Balanced LLM
-  - High-complexity queries: Premium LLM (Claude)
+- **Configurable LLM levels**:
+  - The existing low, medium, high, and legacy claude levels remain supported
+  - All levels use the same Groq model, configurable through `GROQ_MODEL`
 
 - **Safety & Validation**:
   - SQL query safety checking
@@ -107,7 +106,7 @@ The system follows a hierarchical agent architecture:
 
 - Python 3.12+
 - PostgreSQL database (for SQL operations)
-- API keys for LLM providers (Claude and/or OpenAI)
+- A Groq API key (create one at https://console.groq.com/keys)
 - Virtual environment (recommended)
 
 ---
@@ -138,8 +137,7 @@ pip install -e .
 This installs:
 - **langchain**: Core LLM framework
 - **langgraph**: Multi-agent orchestration
-- **langchain-anthropic**: Claude AI integration
-- **langchain-openai**: OpenAI integration
+- **langchain-groq**: Groq model integration
 - **pandas**: Data processing
 - **psycopg2**: PostgreSQL driver
 - **pydantic**: Data validation
@@ -151,8 +149,8 @@ Create a `.env` file in the root directory:
 
 ```env
 # LLM Configuration
-ANTHROPIC_API_KEY=your_claude_api_key
-OPENAI_API_KEY=your_openai_api_key
+GROQ_API_KEY=your_groq_api_key
+GROQ_MODEL=openai/gpt-oss-20b
 
 # Database Configuration
 host=localhost
@@ -162,9 +160,7 @@ password=your_password
 database=data_agent_db
 
 # Optional: LLM Model Selection
-LLM_MODEL_LOW=gpt-3.5-turbo
-LLM_MODEL_MEDIUM=gpt-4-turbo
-LLM_MODEL_HIGH=claude-3-opus
+GROQ_MODEL=openai/gpt-oss-20b
 ```
 
 ---
@@ -210,15 +206,14 @@ Data_Agent/
 
 ### LLM Selection (`utils/llm_pick.py`)
 
-The `pick_llm()` function intelligently selects the appropriate LLM based on complexity:
+The `pick_llm()` function preserves the existing `low`, `medium`, `high`, and legacy `claude` levels for compatibility. All levels use the same Groq model configured by `GROQ_MODEL` (default: `openai/gpt-oss-20b`).
 
 ```python
 from utils.llm_pick import pick_llm
 
-# Select based on complexity
-llm_fast = pick_llm("low")        # Cost-effective for simple queries
-llm_balanced = pick_llm("medium") # Balanced performance and cost
-llm_powerful = pick_llm("claude") # Premium model for complex tasks
+llm_low = pick_llm("low")
+llm_medium = pick_llm("medium")
+llm_high = pick_llm("high")
 ```
 
 ### Database Configuration (`utils/database.py`)
@@ -520,8 +515,8 @@ Modify `utils/llm_pick.py` to adjust:
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `ANTHROPIC_API_KEY` | Claude API key | `sk-ant-...` |
-| `OPENAI_API_KEY` | OpenAI API key | `sk-...` |
+| `GROQ_API_KEY` | Groq API key | Your Groq API key |
+| `GROQ_MODEL` | Groq model ID (optional) | `openai/gpt-oss-20b` |
 | `host` | PostgreSQL host | `localhost` |
 | `port` | PostgreSQL port | `5432` |
 | `user` | PostgreSQL user | `postgres` |
@@ -583,7 +578,7 @@ For questions, issues, or suggestions, please refer to the project documentation
 
 - [LangGraph Documentation](https://langchain-ai.github.io/langgraph/)
 - [LangChain Documentation](https://python.langchain.com/)
-- [Claude API Reference](https://docs.anthropic.com/)
+- [Groq API Documentation](https://console.groq.com/docs)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 
 ---
