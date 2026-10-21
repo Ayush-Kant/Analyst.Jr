@@ -160,9 +160,7 @@ password=your_password
 database=data_agent_db
 
 # Optional: LLM Model Selection
-LLM_MODEL_LOW=gpt-3.5-turbo
-LLM_MODEL_MEDIUM=gpt-4-turbo
-LLM_MODEL_HIGH=claude-3-opus
+GROQ_MODEL=openai/gpt-oss-20b
 ```
 
 ---
@@ -580,7 +578,7 @@ For questions, issues, or suggestions, please refer to the project documentation
 
 - [LangGraph Documentation](https://langchain-ai.github.io/langgraph/)
 - [LangChain Documentation](https://python.langchain.com/)
-- [Claude API Reference](https://docs.anthropic.com/)
+- [Groq API Documentation](https://console.groq.com/docs)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 
 ---
